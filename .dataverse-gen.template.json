@@ -6,6 +6,7 @@
     "generateFormContext": false,
     "generateEntityTypes": true,
     "output":{
-        "outputRoot": "./src/dataverse-gen"
+        "outputRoot": "./src/dataverse-gen",
+        "templateRoot": "./_templates"
     }
 }

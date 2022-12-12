@@ -1,13 +1,12 @@
 {
-  "entities": [],
-  "actions": [],
-  "functions": [
-    "RetrieveMetadataChanges",
-    "WhoAmI"
-  ],
-  "output": {
-    "outputRoot": "./src/dataverse-gen"
-  },
-  "generateIndex": false,
-  "generateFormContext": false
+    "entities":[],
+    "actions":[],
+    "functions":[],
+    "generateIndex": true,
+    "generateFormContext": false,
+    "generateEntityTypes": true,
+    "output":{
+        "outputRoot": "./src/dataverse-gen",
+        "templateRoot": "./_templates"
+    }
 }

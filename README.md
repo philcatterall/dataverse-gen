@@ -31,7 +31,15 @@ If you wanted to just generate Attribute `enum` constants and stop there, you ca
 npx dataverse-gen eject
 ```
 
-This will create a step of templates ready to customise in the `_templates` folder. Once you have made your updates, just run `npx dataverse-gen` again. The templates use the awesome [ejs](https://ejs.co/) project. E.g.
+This will create a step of templates ready to customise in the `_templates` folder.
+Ensure the `.dataverse-gen.json` has the path to the templates folder:
+```json
+ "output":{
+        "outputRoot": "./src/dataverse-gen",
+        "templateRoot": "./_templates"
+    }
+```
+Once you have made your updates, just run `npx dataverse-gen` again. The templates use the awesome [ejs](https://ejs.co/) project. E.g.
 
 ```typescript
 // Attribute constants
