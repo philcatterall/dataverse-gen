@@ -57,6 +57,7 @@ export class TypescriptGenerator {
   }
   async outputAllAttributeTypes(schema: SchemaModel): Promise<void> {
     const allEntities = schema.EntityTypes.map((entity) => ({
+      Name: entity.Name, // preserve the original 'Name'
       entityName: entity.Name,
       properties: entity.Properties.map((property) => ({
         ...property,
@@ -65,6 +66,7 @@ export class TypescriptGenerator {
     }));
 
     const allEnums = schema.EnumTypes.map((enumType) => ({
+      Name: enumType.Name, // preserve the original 'Name'
       enumName: enumType.Name,
       members: enumType.Members ?? [], // use nullish coalescing operator
     }));
