@@ -1,0 +1,32 @@
+import { EntityReference, Guid } from "dataverse-ify";
+import { srvsys_SectorAttributes } from "./dataverse-gen";
+import { srvsys_TestOptionsSet } from "./dataverse-gen/index";
+// Enum RelationshipType
+<% enums.forEach(function(enumType) { -%>
+// Enum <%= enumType.enumName %>
+export const enum <%= enumType.enumName %> {
+<% enumType.members.forEach(function(member){ -%>
+<% if (enumType.StringMembers){ -%>
+  <%= member.Name %> = "<%= member.Name %>",
+<% } else { -%>
+  <%= member.Name %> = <%= member.Value %>,
+<% } -%>
+<% }); -%>
+}
+<% }); -%>
+<% entities.forEach(function(entity) { -%>
+// Attribute constants
+export const enum <%= entity.entityName %>Attributes {
+<% entity.properties.forEach(function(property) { -%>
+  <%= property.Name %> = "<%= property.Name %>",
+<% }); -%>
+}
+<% }); -%>
+
+export type AttributeTypes = {
+<% entities.forEach(function(entity) { -%>
+<% entity.properties.forEach(function(property) { -%>
+  [<%- entity.entityName %>Attributes.<%- property.Name %>]: <%- property.TypescriptType.name %> | null;
+<% }); -%>
+<% }); -%>
+};

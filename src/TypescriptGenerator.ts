@@ -35,6 +35,7 @@ export class TypescriptGenerator {
     if (!this.options.output?.outputRoot) throw new Error("Missing outputRoot in config");
 
     this.fileNames = [];
+    this.outputAllAttributeTypes(this.model);
     this.outputEntities(this.model);
     this.outputEnums(this.model);
     this.outputActions(this.model);
@@ -54,6 +55,92 @@ export class TypescriptGenerator {
       );
     }
   }
+  async outputAllAttributeTypes(schema: SchemaModel): Promise<void> {
+    const allEntities = schema.EntityTypes.map((entity) => ({
+      entityName: entity.Name,
+      properties: entity.Properties.map((property) => ({
+        ...property,
+        importLocation: property.TypescriptType?.importLocation,
+      })),
+    }));
+
+    const allEnums = schema.EnumTypes.map((enumType) => ({
+      enumName: enumType.Name,
+      members: enumType.Members ?? [], // use nullish coalescing operator
+    }));
+
+    // const allEnums = schema.EnumTypes.map((enumType) => ({
+    //   enumName: enumType.Name,
+    //   members: enumType.Members
+    //     ? enumType.Members.map((member) => ({
+    //         ...member,
+    //       }))
+    //     : [],
+    // }));
+
+    const outFile = "./typings/attributeTypes.d.ts";
+    this.logger("Generating: " + outFile);
+
+    const template = this.templateProvider.getTemplate("allAttributeTypes.ejs");
+
+    if (template) {
+      allEntities.forEach((entity) => {
+        entity.properties.forEach((prop) => {
+          // console.log(prop);
+          if (prop.importLocation?.startsWith("..")) {
+            prop.importLocation = prop.importLocation.replace("..", ".");
+          }
+        });
+      });
+      let output = "";
+      try {
+        output = ejs.render(template, { entities: allEntities, enums: allEnums });
+      } catch (error) {
+        console.error("Error rendering EJS template:", error);
+      }
+      // this.fileNames.push(outFile);
+      this.codeWriter.write(outFile, output);
+    } else {
+      this.logger("Skipping - no template found 'allAttributeTypes.ejs'");
+    }
+  }
+
+  // tis works - commented as trying to add enums above
+  // async outputAllAttributeTypes(schema: SchemaModel): Promise<void> {
+  //   const allEntities = schema.EntityTypes.map((entity) => ({
+  //     entityName: entity.Name,
+  //     properties: entity.Properties.map((property) => ({
+  //       ...property,
+  //       importLocation: property.TypescriptType?.importLocation,
+  //     })),
+  //   }));
+
+  //   const outFile = "attributeTypes.d.ts";
+  //   this.logger("Generating: " + outFile);
+
+  //   const template = this.templateProvider.getTemplate("allAttributeTypes.ejs");
+
+  //   if (template) {
+  //     allEntities.forEach((entity) => {
+  //       entity.properties.forEach((prop) => {
+  //         console.log(prop);
+  //         if (prop.importLocation?.startsWith("..")) {
+  //           prop.importLocation = prop.importLocation.replace("..", ".");
+  //         }
+  //       });
+  //     });
+  //     let output = "";
+  //     try {
+  //       output = ejs.render(template, { entities: allEntities });
+  //     } catch (error) {
+  //       console.error("Error rendering EJS template:", error);
+  //     }
+  //     this.fileNames.push(outFile);
+  //     this.codeWriter.write(outFile, output);
+  //   } else {
+  //     this.logger("Skipping - no template found 'allAttributeTypes.ejs'");
+  //   }
+  // }
 
   outputEntities(schema: SchemaModel): void {
     this.outputFiles("entity.ejs", "entities", schema.EntityTypes as unknown[], this.schemaNameKey);

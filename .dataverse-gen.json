@@ -1,5 +1,5 @@
 {
-  "entities": [],
+  "entities": ["srvsys_sector"],
   "actions": [],
   "functions": [
     "RetrieveMetadataChanges",
@@ -8,7 +8,7 @@
   "output": {
     "outputRoot": "./src/dataverse-gen"
   },
-  "generateIndex": false,
-  "generateFormContext": false,
+  "generateIndex": true,
+  "generateFormContext": true,
   "generateEntityTypes": true
 }
