@@ -1,5 +1,5 @@
 {
-  "entities": ["srvsys_sector"],
+  "entities": [],
   "actions": [],
   "functions": [
     "RetrieveMetadataChanges",
