@@ -1,6 +1,6 @@
 {
   "name": "@philcatterall/dataverse-gen",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Early bound types generator for dataverse-ify. This is an early test version which is a fork of Scott Durow's dataverse-gen. It is a work in progress aimed at adding Business Process Flow Metadata and a typings file for attributes. Ultimate goal is to type attributes per form, so you can't accidentally pick an attribute for any given form that does not exist. Wish me luck !!",
   "main": "lib/index.js",
   "repository": {
