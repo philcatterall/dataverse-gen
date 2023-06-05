@@ -157,9 +157,9 @@ export class TypescriptGenerator {
       try {
         this.logger("Generating: " + outFile);
         // console.log(item.properties);
-        const opts: ejs.Options = {
-          _with: true,
-        };
+        // const opts: ejs.Options = {
+        //   _with: true,
+        // };
         const template = this.templateProvider.getTemplate(templateFileName);
         if (template) {
           output = ejs.render(template, { ...this.options, ...item });

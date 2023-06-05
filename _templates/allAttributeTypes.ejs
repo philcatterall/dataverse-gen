@@ -2,7 +2,6 @@ import { EntityReference, Guid } from "dataverse-ify";
 <% entities.forEach(function(entity) { -%>
 import { <%- entity.SchemaName -%>Attributes } from "../entities/<%- entity.SchemaName-%>";
 <% }); -%>
-import { srvsys_SectorAttributes } from "../entities/srvsys_Sector";
 // AttributeTypes
 export type AttributeTypes = {
 <% entities.forEach(function(entity) { -%>
