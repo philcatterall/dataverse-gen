@@ -58,8 +58,8 @@ export class TypescriptGenerator {
   async outputAllAttributeTypes(schema: SchemaModel): Promise<void> {
     const allEntities = schema.EntityTypes.map((entity) => ({
       Name: entity.Name, // preserve the original 'Name'
-      entityName: entity.Name,
-      properties: entity.Properties.map((property) => ({
+      SchemaName: entity.SchemaName,
+      Properties: entity.Properties.map((property) => ({
         ...property,
         importLocation: property.TypescriptType?.importLocation,
       })),
@@ -70,30 +70,24 @@ export class TypescriptGenerator {
       enumName: enumType.Name,
       members: enumType.Members ?? [], // use nullish coalescing operator
     }));
+    const typingsFolder = "./typings";
+    this.codeWriter.createSubFolder(typingsFolder); // ensure the typings folder is created
 
-    // const allEnums = schema.EnumTypes.map((enumType) => ({
-    //   enumName: enumType.Name,
-    //   members: enumType.Members
-    //     ? enumType.Members.map((member) => ({
-    //         ...member,
-    //       }))
-    //     : [],
-    // }));
-
-    const outFile = "./typings/attributeTypes.d.ts";
+    const outFile = path.join(typingsFolder, this.options.output?.typingsFile || "index.d.ts");
     this.logger("Generating: " + outFile);
 
     const template = this.templateProvider.getTemplate("allAttributeTypes.ejs");
 
     if (template) {
       allEntities.forEach((entity) => {
-        entity.properties.forEach((prop) => {
+        entity.Properties.forEach((prop) => {
           // console.log(prop);
           if (prop.importLocation?.startsWith("..")) {
             prop.importLocation = prop.importLocation.replace("..", ".");
           }
         });
       });
+      // console.log(allEntities[0].properties);
       let output = "";
       try {
         output = ejs.render(template, { entities: allEntities, enums: allEnums });
@@ -107,44 +101,11 @@ export class TypescriptGenerator {
     }
   }
 
-  // tis works - commented as trying to add enums above
-  // async outputAllAttributeTypes(schema: SchemaModel): Promise<void> {
-  //   const allEntities = schema.EntityTypes.map((entity) => ({
-  //     entityName: entity.Name,
-  //     properties: entity.Properties.map((property) => ({
-  //       ...property,
-  //       importLocation: property.TypescriptType?.importLocation,
-  //     })),
-  //   }));
-
-  //   const outFile = "attributeTypes.d.ts";
-  //   this.logger("Generating: " + outFile);
-
-  //   const template = this.templateProvider.getTemplate("allAttributeTypes.ejs");
-
-  //   if (template) {
-  //     allEntities.forEach((entity) => {
-  //       entity.properties.forEach((prop) => {
-  //         console.log(prop);
-  //         if (prop.importLocation?.startsWith("..")) {
-  //           prop.importLocation = prop.importLocation.replace("..", ".");
-  //         }
-  //       });
-  //     });
-  //     let output = "";
-  //     try {
-  //       output = ejs.render(template, { entities: allEntities });
-  //     } catch (error) {
-  //       console.error("Error rendering EJS template:", error);
-  //     }
-  //     this.fileNames.push(outFile);
-  //     this.codeWriter.write(outFile, output);
-  //   } else {
-  //     this.logger("Skipping - no template found 'allAttributeTypes.ejs'");
-  //   }
-  // }
-
   outputEntities(schema: SchemaModel): void {
+    schema.EntityTypes[0].Properties.forEach((prop) => {
+      console.log(prop);
+    });
+
     this.outputFiles("entity.ejs", "entities", schema.EntityTypes as unknown[], this.schemaNameKey);
   }
 
@@ -163,6 +124,7 @@ export class TypescriptGenerator {
   outputComplexTypes(schema: SchemaModel): void {
     this.outputFiles("complextype.ejs", "complextypes", schema.ComplexTypes as unknown[], this.nameKey);
   }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nameKey(item: any): string {
     return item?.Name;
@@ -187,13 +149,17 @@ export class TypescriptGenerator {
 
     // Create sub-output directory
     this.codeWriter.createSubFolder(outputDir);
-
+    // console.log(itemArray[0]);
     for (const item of itemArray) {
       const fileName = getFileName(item);
       const outFile = path.join(outputDir, `${fileName}${this.options.output?.fileSuffix}`);
       let output = "";
       try {
         this.logger("Generating: " + outFile);
+        // console.log(item.properties);
+        const opts: ejs.Options = {
+          _with: true,
+        };
         const template = this.templateProvider.getTemplate(templateFileName);
         if (template) {
           output = ejs.render(template, { ...this.options, ...item });

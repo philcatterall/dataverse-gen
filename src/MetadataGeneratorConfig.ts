@@ -6,6 +6,7 @@ export interface OutputConfig {
   outputRoot?: string;
   fileSuffix?: string;
   useCache?: boolean;
+  typingsFile?: string;
 }
 export interface ImportType {
   name?: string;
@@ -77,5 +78,6 @@ export const defaultOptions = {
     outputRoot: "./src/dataverse-gen", // Default
     templateRoot: "./_templates",
     fileSuffix: ".ts",
+    typingsFile: "index.d.ts",
   },
 } as DataverseGenOptions;

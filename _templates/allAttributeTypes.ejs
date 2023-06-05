@@ -1,30 +1,13 @@
 import { EntityReference, Guid } from "dataverse-ify";
-// Enum RelationshipType
-<% enums.forEach(function(enumType) { -%>
-// Enum <%= enumType.enumName %>
-export const enum <%= enumType.enumName %> {
-<% enumType.members.forEach(function(member){ -%>
-<% if (enumType.StringMembers){ -%>
-  <%= member.Name %> = "<%= member.Name %>",
-<% } else { -%>
-  <%= member.Name %> = <%= member.Value %>,
-<% } -%>
-<% }); -%>
-}
-<% }); -%>
 <% entities.forEach(function(entity) { -%>
-// Attribute constants
-export const enum <%= entity.entityName %>Attributes {
-<% entity.properties.forEach(function(property) { -%>
-  <%= property.Name %> = "<%= property.Name %>",
+import { <%- entity.SchemaName -%>Attributes } from "../entities/<%- entity.SchemaName-%>";
 <% }); -%>
-}
-<% }); -%>
-
+import { srvsys_SectorAttributes } from "../entities/srvsys_Sector";
+// AttributeTypes
 export type AttributeTypes = {
 <% entities.forEach(function(entity) { -%>
-<% entity.properties.forEach(function(property) { -%>
-  [<%- entity.entityName %>Attributes.<%- property.Name %>]: <%- property.TypescriptType.name %> | null;
+<% entity.Properties.forEach(function(property) { -%>
+  [<%- entity.SchemaName %>Attributes.<%- property.SchemaName %>]: <%- property.TypescriptType.name %> | null;
 <% }); -%>
 <% }); -%>
 };
