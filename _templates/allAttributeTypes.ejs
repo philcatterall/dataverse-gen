@@ -1,12 +1,19 @@
 import { EntityReference, Guid } from "dataverse-ify";
+import * as enums from "../index";
 <% entities.forEach(function(entity) { -%>
 import { <%- entity.SchemaName -%>Attributes } from "../entities/<%- entity.SchemaName-%>";
 <% }); -%>
 // AttributeTypes
 export type AttributeTypes = {
-<% entities.forEach(function(entity) { -%>
-<% entity.Properties.forEach(function(property) { -%>
-  [<%- entity.SchemaName %>Attributes.<%- property.SchemaName %>]: <%- property.TypescriptType.name %> | null;
-<% }); -%>
-<% }); -%>
-};
+  <% entities.forEach(function(entity) { -%>
+  <% entity.Properties.forEach(function(property) { -%>
+    [<%- entity.SchemaName %>Attributes.<%- property.SchemaName %>]: 
+    <% if (property.TypescriptType.definitelyTypedAttributeType === "Xrm.Attributes.OptionSetAttribute") { -%>
+      enums.<%-property.TypescriptType.name -%> | null;
+    <% } else { -%>
+      <%- property.TypescriptType.name %> | null;
+    <% } -%>
+  <% }); -%>
+  <% }); -%>
+  };
+  

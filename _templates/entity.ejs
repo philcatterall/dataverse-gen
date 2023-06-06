@@ -16,7 +16,7 @@ export interface <%- SchemaName %>FormContext extends Xrm.FormContext {
     getControl(controlName: string): Xrm.Controls.Control;
     getControl(index: number): Xrm.Controls.Control;
 
-<%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && property.SourceType === 0 && property.TypescriptType.name !== 'Guid' && property.TypescriptType.definitelyTypedAttributeType) { _%>
+<%locals.Properties && locals.Properties.forEach(function(property){ if(!property.AttributeOf && (property.SourceType === 0 || property.Type === "LookupType")  && property.TypescriptType.name !== 'Guid' && property.TypescriptType.definitelyTypedAttributeType) { _%>
     /*
     <%- property.Description %>
     */
