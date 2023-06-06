@@ -81,10 +81,9 @@ export class TypescriptGenerator {
     if (template) {
       allEntities.forEach((entity) => {
         entity.Properties.forEach((prop) => {
-          console.log(prop);
+          // console.log(prop);
           if (prop.importLocation?.startsWith("..")) {
             prop.importLocation = prop.importLocation.replace("..", ".");
-            const tsType = prop.TypescriptType;
           }
         });
       });
